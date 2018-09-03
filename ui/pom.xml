@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.superbapps</groupId>
+    <artifactId>spring-boot-vaadin-hybrid-menu</artifactId>
+    <version>1.0</version>
+    <packaging>war</packaging>
+
+    <name>ui</name>
+
+    <parent>
+        <groupId>com.superbapps</groupId>
+        <artifactId>springboot-vaadin8-hybridmenu</artifactId> 
+        <version>1.0</version> 
+        <relativePath/> 
+    </parent> 
+
+    <properties>
+        <project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${project.encoding}</project.reporting.outputEncoding>
+        <java.version>${jdk.version}</java.version>
+        <!--<vaadin.version>8.5.1</vaadin.version>-->
+        <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
+        <!--<vaadin-spring.version>3.1.0</vaadin-spring.version>-->
+        <!--<vaadin.hybridmenu.version>2.1.4-ALPHA</vaadin.hybridmenu.version>-->
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-spring-boot</artifactId>
+            <!--<version>${vaadin-spring.version}</version>-->
+        </dependency>
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>hybridmenu</artifactId>
+            <version>${vaadin.hybridmenu.version}</version>
+        </dependency>
+
+        <!-- Needed for ThemeBuilder only -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <!--<version>2.8.5</version>-->
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency> 
+            <groupId>org.springframework.boot</groupId> 
+            <artifactId>spring-boot-starter-web</artifactId> 
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+        </dependency>
+        <!--
+        isključivanjem, i tomcat, i springboot rade, u suprotnom ne... 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        -->
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>vaadin-addons</id>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-bom</artifactId>
+                <version>${vaadin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <!--https://www.baeldung.com/spring-boot-war-tomcat-deploy-->
+        <!--<finalName>${artifactId}</finalName>-->
+        <plugins>
+            <plugin>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-maven-plugin</artifactId>
+                <version>${vaadin.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>update-theme</goal>
+                            <goal>update-widgetset</goal>
+                            <goal>compile</goal>
+                            <goal>compile-theme</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <!-- Clean up also any pre-compiled themes -->
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/webapp/VAADIN/themes</directory>
+                            <includes>
+                                <include>**/styles.css</include>
+                                <include>**/styles.scss.cache</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.0</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
