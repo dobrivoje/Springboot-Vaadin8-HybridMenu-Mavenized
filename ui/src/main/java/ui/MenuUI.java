@@ -39,6 +39,8 @@ import kaesdingeling.hybridmenu.data.leftmenu.MenuSubMenu;
 import kaesdingeling.hybridmenu.data.top.TopMenuButton;
 import kaesdingeling.hybridmenu.data.top.TopMenuLabel;
 import kaesdingeling.hybridmenu.data.top.TopMenuSubContent;
+import org.springframework.beans.factory.annotation.Autowired;
+import ui.views.LoginPage;
 
 @SpringUI
 @Theme("mytheme")
@@ -62,7 +64,7 @@ public class MenuUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         Responsive.makeResponsive(this);
-        
+
         UI.getCurrent().setPollInterval(5000);
 
         MenuConfig menuConfig = new MenuConfig();
@@ -88,7 +90,7 @@ public class MenuUI extends UI {
         setContent(this.hybridMenu);
         navigationManager.init(this, hybridMenu.getContent());
 
-        navigationManager.navigateToDefaultView();
+        setContent(new LoginPage());
     }
 
     private void buildTopMenu(HybridMenu hybridMenu) {
@@ -283,5 +285,10 @@ public class MenuUI extends UI {
 
     public HybridMenu getHybridMenu() {
         return hybridMenu;
+    }
+
+    protected void showMainView() {
+//        setContent(new MainScreen(MainUI.this));
+        navigationManager.navigateTo(HomePage.class);
     }
 }

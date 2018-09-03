@@ -9,6 +9,7 @@ import com.vaadin.spring.navigator.SpringNavigator;
 import ui.system.util.SpringViewUtil;
 import ui.views.HomePage;
 import org.springframework.stereotype.Component;
+import ui.views.LoginPage;
 
 /**
  * Governs view navigation of the app.
@@ -52,6 +53,14 @@ public class NavigationManager extends SpringNavigator {
 
         // Change default view here
         navigateTo(HomePage.class);
+    }
+    
+    public void navigateToLoginView() {
+        if (!getState().isEmpty()) {
+            return;
+        }
+
+        navigateTo(LoginPage.class);
     }
 
     /**
