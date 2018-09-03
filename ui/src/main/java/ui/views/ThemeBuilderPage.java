@@ -1,5 +1,6 @@
 package ui.views;
 
+import ui.MainUI;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.vaadin.icons.VaadinIcons;
@@ -17,7 +18,6 @@ import com.vaadin.ui.Slider;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import ui.MenuUI;
 import com.vaadin.server.Responsive;
 import kaesdingeling.hybridmenu.builder.NotificationBuilder;
 import kaesdingeling.hybridmenu.data.DesignItem;
@@ -97,7 +97,7 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
             lockForLoad = true;
             try {
                 designItem = new Gson().fromJson(jsonOutput.getValue(), DesignItem.class);
-                NotificationBuilder.get(((MenuUI) UI.getCurrent()).getHybridMenu().getNotificationCenter())
+                NotificationBuilder.get(((MainUI) UI.getCurrent()).getHybridMenu().getNotificationCenter())
                         .withCaption("Import successful")
                         .withDescription("The design adapts itself automatically")
                         .withPriority(ENotificationPriority.MEDIUM)
@@ -105,7 +105,7 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
                         .withCloseByHide()
                         .build();
             } catch (JsonSyntaxException e2) {
-                NotificationBuilder.get(((MenuUI) UI.getCurrent()).getHybridMenu().getNotificationCenter())
+                NotificationBuilder.get(((MainUI) UI.getCurrent()).getHybridMenu().getNotificationCenter())
                         .withCaption("Import failed")
                         .withDescription("The entry was rejected")
                         .withPriority(ENotificationPriority.MEDIUM)
@@ -206,7 +206,7 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
 
     private void update() {
         write();
-        ((MenuUI) UI.getCurrent()).getHybridMenu().switchTheme(designItem);
+        ((MainUI) UI.getCurrent()).getHybridMenu().switchTheme(designItem);
         jsonOutput.setValue(new Gson().toJson(designItem));
     }
 

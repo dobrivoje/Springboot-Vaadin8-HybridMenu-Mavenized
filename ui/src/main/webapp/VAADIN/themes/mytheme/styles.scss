@@ -1,7 +1,9 @@
 @import "addons.scss";
 @import "mytheme.scss";
+@import "shame.scss";
 
 .mytheme {
   @include addons;
   @include mytheme;
+  @include shame;
 }

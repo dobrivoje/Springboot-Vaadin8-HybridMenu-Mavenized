@@ -25,7 +25,7 @@ import java.util.Arrays;
 @SpringView
 public class LoginPage extends CssLayout implements View {
 
-    public static final String[] DOMAINS = new String[]{/*"INTERMOL", "RIS",*/"LOCAL"};
+    public static final String[] DOMAINS = new String[]{/*"INTERMOL", "RIS",*/"SERVER"};
     private TextField username;
     private PasswordField password;
     private ComboBox domain;
@@ -41,7 +41,7 @@ public class LoginPage extends CssLayout implements View {
     @Override
     public void enter(ViewChangeEvent event) {
     }
-    
+
     private void buildUI() {
         addStyleName("login-screen");
 
@@ -87,6 +87,7 @@ public class LoginPage extends CssLayout implements View {
         domain.setIcon(VaadinIcons.DASHBOARD);
         domain.setTextInputAllowed(false);
         domain.setValue(DOMAINS[0]);
+        domain.setEmptySelectionAllowed(false);
         loginForm.addComponent(domain);
 
         CssLayout buttons = new CssLayout();
@@ -106,7 +107,7 @@ public class LoginPage extends CssLayout implements View {
 
         buttons.addComponent(forgotPassword = new Button("Fotgotten password"));
         forgotPassword.addClickListener((Button.ClickEvent event) -> {
-            showNotification(new Notification("*******************"));
+            showNotification(new Notification("For reseting password"));
         });
         forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);
 

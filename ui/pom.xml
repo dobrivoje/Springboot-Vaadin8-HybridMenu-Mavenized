@@ -14,17 +14,13 @@
         <groupId>com.superbapps</groupId>
         <artifactId>springboot-vaadin8-hybridmenu</artifactId> 
         <version>1.0</version> 
-        <relativePath/> 
     </parent> 
 
     <properties>
         <project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.encoding}</project.reporting.outputEncoding>
         <java.version>${jdk.version}</java.version>
-        <!--<vaadin.version>8.5.1</vaadin.version>-->
         <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
-        <!--<vaadin-spring.version>3.1.0</vaadin-spring.version>-->
-        <!--<vaadin.hybridmenu.version>2.1.4-ALPHA</vaadin.hybridmenu.version>-->
     </properties>
 
     <dependencies>
@@ -62,7 +58,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>21.0</version>
+            <version>23.0</version>
         </dependency>
         <!--
         isključivanjem, i tomcat, i springboot rade, u suprotnom ne... 

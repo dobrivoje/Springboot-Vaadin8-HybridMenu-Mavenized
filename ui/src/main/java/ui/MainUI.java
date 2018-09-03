@@ -4,7 +4,6 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -14,11 +13,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import ui.system.manager.SpringViewChangeManager;
 import ui.system.manager.NavigationManager;
-import ui.views.GroupPage;
-import ui.views.HomePage;
-import ui.views.MemberPage;
-import ui.views.SettingsPage;
-import ui.views.ThemeBuilderPage;
 import com.vaadin.server.Responsive;
 import kaesdingeling.hybridmenu.HybridMenu;
 import kaesdingeling.hybridmenu.builder.HybridMenuBuilder;
@@ -39,24 +33,28 @@ import kaesdingeling.hybridmenu.data.leftmenu.MenuSubMenu;
 import kaesdingeling.hybridmenu.data.top.TopMenuButton;
 import kaesdingeling.hybridmenu.data.top.TopMenuLabel;
 import kaesdingeling.hybridmenu.data.top.TopMenuSubContent;
-import org.springframework.beans.factory.annotation.Autowired;
 import ui.views.LoginPage;
+import ui.views.MemberPage;
+import ui.views.SettingsPage;
+import ui.views.ThemeBuilderPage;
+import ui.views.GroupPage;
+import ui.views.HomePage;
 
 @SpringUI
 @Theme("mytheme")
 @Viewport("width=device-width,initial-scale=1.0,user-scalable=no")
 @Title("Vaadin Spring Boot with HybridMenu Template")
 @SuppressWarnings("serial")
-public class MenuUI extends UI {
+public class MainUI extends UI {
 
-    private final SpringViewProvider viewProvider;
+//    private final SpringViewProvider viewProvider;
     private final NavigationManager navigationManager;
 
     private HybridMenu hybridMenu;
     private NotificationCenter notificationCenter = null;
 
-    public MenuUI(SpringViewProvider viewProvider, NavigationManager navigationManager) {
-        this.viewProvider = viewProvider;
+    public MainUI(/*SpringViewProvider viewProvider,*/ NavigationManager navigationManager) {
+//        this.viewProvider = viewProvider;
         this.navigationManager = navigationManager;
         super.setNavigator(this.navigationManager);
     }
@@ -90,7 +88,9 @@ public class MenuUI extends UI {
         setContent(this.hybridMenu);
         navigationManager.init(this, hybridMenu.getContent());
 
-        setContent(new LoginPage());
+        // navigationManager.navigateTo(HomePage.class);
+        //setContent(new LoginPage());
+        navigationManager.navigateToLoginView();
     }
 
     private void buildTopMenu(HybridMenu hybridMenu) {
@@ -137,7 +137,7 @@ public class MenuUI extends UI {
                 .setCaption("Home")
                 .setIcon(VaadinIcons.HOME)
                 .setAlignment(Alignment.MIDDLE_RIGHT)
-                .setToolTip("5")
+                .setToolTip("2")
                 .setNavigateTo(HomePage.class)
                 .build(hybridMenu);
 
@@ -159,19 +159,19 @@ public class MenuUI extends UI {
 
         TopMenuButton notiButtonLow = TopMenuButtonBuilder.get()
                 .setCaption("Add Low notification")
-                .setIcon(VaadinIcons.BELL_O)
+                .setIcon(VaadinIcons.ALARM)
                 .setUseOwnListener(true)
                 .build(hybridMenu);
 
         TopMenuButton notiButtonMedium = TopMenuButtonBuilder.get()
                 .setCaption("Add Medium notification")
-                .setIcon(VaadinIcons.BELL_O)
+                .setIcon(VaadinIcons.CHILD)
                 .setUseOwnListener(true)
                 .build(hybridMenu);
 
         TopMenuButton notiButtonHigh = TopMenuButtonBuilder.get()
                 .setCaption("Add High notification")
-                .setIcon(VaadinIcons.BELL_O)
+                .setIcon(VaadinIcons.MUSIC)
                 .setUseOwnListener(true)
                 .build(hybridMenu);
 
@@ -220,7 +220,7 @@ public class MenuUI extends UI {
 
         MenuButton themeBuilderButton = LeftMenuButtonBuilder.get()
                 .withCaption("Theme Builder")
-                .withIcon(FontAwesome.WRENCH)
+                .withIcon(VaadinIcons.WRENCH)
                 .withNavigateTo(ThemeBuilderPage.class)
                 .build();
 

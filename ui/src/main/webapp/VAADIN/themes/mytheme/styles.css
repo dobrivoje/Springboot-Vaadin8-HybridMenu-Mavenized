@@ -17204,7 +17204,7 @@ div.v-layout.v-horizontal.v-widget {
 	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
 	border: none;
-	padding: $v-layout-margin;
+	padding: 21px 21px 21px 21px;
 	-webkit-animation: valo-animate-in-fade 1s backwards;
 	-moz-animation: valo-animate-in-fade 1s backwards;
 	animation: valo-animate-in-fade 1s backwards;
@@ -17219,7 +17219,7 @@ div.v-layout.v-horizontal.v-widget {
 	height: 100%;
 	background: #60a0ea;
 	background-color: rgba(96, 160, 234, 0.7);
-	padding: $v-layout-margin;
+	padding: 21px 21px 21px 21px;
 	color: #f2f6fa;
 	-webkit-animation: valo-animate-in-fade 1s 1s backwards;
 	-moz-animation: valo-animate-in-fade 1s 1s backwards;
@@ -17299,4 +17299,8 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-ui[width-range~="0-800px"] .login-screen .login-form .buttons .v-button {
 	display: block;
 	text-align: center;
+}
+
+.mytheme .v-ui[width-range~="0-800px"] {
+	padding-top: 0;
 }
