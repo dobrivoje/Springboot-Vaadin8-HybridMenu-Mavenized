@@ -21,8 +21,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
-import org.springframework.beans.factory.annotation.Autowired;
-import ui.system.manager.NavigationManager;
+import system.eventbus.Events;
+import system.manager.NavigationManager;
 
 @SpringView
 public class LoginPage extends CssLayout implements View {
@@ -35,17 +35,19 @@ public class LoginPage extends CssLayout implements View {
     private Button login;
     private Button forgotPassword;
 
-    private NavigationManager navigationManager;
-
+//    @Autowired
+//    private NavigationManager navigationManager;
+//    @Autowired
+//    private MojServis mojServis;
     public LoginPage() {
+        Events.register(this);
         buildUI();
         username.focus();
     }
 
-    @Autowired
     public LoginPage(NavigationManager navigationManager) {
         this();
-        this.navigationManager = navigationManager;
+        // this.navigationManager = navigationManager;
     }
 
     @Override
@@ -109,6 +111,7 @@ public class LoginPage extends CssLayout implements View {
         login.addClickListener((Button.ClickEvent event) -> {
             try {
                 login();
+                Events.post(new Events.LoginTryEvent(username.getValue()));
             } finally {
                 login.setEnabled(true);
             }
@@ -116,7 +119,7 @@ public class LoginPage extends CssLayout implements View {
         login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
         buttons.addComponent(forgotPassword = new Button("Fotgotten password"));
-        forgotPassword.addClickListener((Button.ClickEvent event) -> {
+        forgotPassword.addClickListener((Button.ClickEvent e) -> {
             showNotification(new Notification("For reseting password"));
         });
         forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);
@@ -155,8 +158,7 @@ public class LoginPage extends CssLayout implements View {
 
         un += (username.getValue()).toLowerCase();
 
-        navigationManager.navigateTo(SettingsPage.class);
-        // DashboardEventBus.post(new UserLoginRequestedEvent(un, password.getValue(), false));
+        // navigationManager.navigateTo(SettingsPage.class);
     }
 
     private void showNotification(Notification notification) {

@@ -1,4 +1,4 @@
-package ui.system.manager;
+package system.manager;
 
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Component;

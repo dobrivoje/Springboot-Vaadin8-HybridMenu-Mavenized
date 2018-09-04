@@ -10,8 +10,6 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import ui.system.manager.SpringViewChangeManager;
-import ui.system.manager.NavigationManager;
 import com.vaadin.server.Responsive;
 import kaesdingeling.hybridmenu.HybridMenu;
 import kaesdingeling.hybridmenu.builder.HybridMenuBuilder;
@@ -39,6 +37,11 @@ import ui.views.SettingsPage;
 import ui.views.ThemeBuilderPage;
 import ui.views.GroupPage;
 import ui.views.HomePage;
+import system.eventbus.Events;
+import com.vaadin.ui.Button;
+import system.manager.SpringViewChangeManager;
+import system.manager.NavigationManager;
+import com.google.common.eventbus.Subscribe;
 
 @SpringUI
 @Theme("mytheme")
@@ -55,13 +58,20 @@ public class MainUI extends UI {
 
     @Autowired
     public MainUI(/*SpringViewProvider viewProvider,*/NavigationManager navigationManager) {
-//        this.viewProvider = viewProvider;
         this.navigationManager = navigationManager;
         super.setNavigator(this.navigationManager);
     }
 
+    @Subscribe
+    public void loginTry(Events.LoginTryEvent lte) {
+        System.err.println("Events.LoginTryEvent        class : " + getClass() + "          ->           " + lte.getUsername());
+    }
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        Events.register(this);
+        Events.post(new Events.LoginTryEvent("DOBRILO !!!"));
+
         Responsive.makeResponsive(this);
 
         UI.getCurrent().setPollInterval(5000);
@@ -89,8 +99,8 @@ public class MainUI extends UI {
         setContent(this.hybridMenu);
         navigationManager.init(this, hybridMenu.getContent());
 
-        // navigationManager.navigateTo(HomePage.class);
-        setContent(new LoginPage(navigationManager));
+        navigationManager.navigateTo(HomePage.class);
+        // setContent(new LoginPage());
         // navigationManager.navigateToLoginView();
     }
 
@@ -155,7 +165,8 @@ public class MainUI extends UI {
                 .build(hybridMenu);
 
         label.getComponent().addClickListener(e -> {
-            UI.getCurrent().getNavigator().navigateTo(HomePage.class.getSimpleName());
+            // UI.getCurrent().getNavigator().navigateTo(HomePage.class.getSimpleName());
+            navigationManager.navigateTo(LoginPage.class);
         });
 
         TopMenuButton notiButtonLow = TopMenuButtonBuilder.get()
@@ -231,7 +242,9 @@ public class MainUI extends UI {
                 .withCaption("Settings")
                 .withIcon(VaadinIcons.COGS)
                 .withNavigateTo(SettingsPage.class)
-                .build();
+                .withClickListener((Button.ClickEvent e) -> {
+                    Events.post(new Events.MainMenuClickEvent());
+                }).build();
 
         hybridMenu.addLeftMenuButton(settingsButton);
 
