@@ -8,13 +8,13 @@ import com.vaadin.spring.internal.Conventions;
 import com.vaadin.spring.navigator.SpringNavigator;
 import ui.system.util.SpringViewUtil;
 import ui.views.HomePage;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ui.views.LoginPage;
 
 /**
  * Governs view navigation of the app.
  */
-@Component
+@Service
 @UIScope
 public class NavigationManager extends SpringNavigator {
 

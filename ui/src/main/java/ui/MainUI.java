@@ -7,7 +7,6 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -33,6 +32,7 @@ import kaesdingeling.hybridmenu.data.leftmenu.MenuSubMenu;
 import kaesdingeling.hybridmenu.data.top.TopMenuButton;
 import kaesdingeling.hybridmenu.data.top.TopMenuLabel;
 import kaesdingeling.hybridmenu.data.top.TopMenuSubContent;
+import org.springframework.beans.factory.annotation.Autowired;
 import ui.views.LoginPage;
 import ui.views.MemberPage;
 import ui.views.SettingsPage;
@@ -51,9 +51,10 @@ public class MainUI extends UI {
     private final NavigationManager navigationManager;
 
     private HybridMenu hybridMenu;
-    private NotificationCenter notificationCenter = null;
+    private NotificationCenter notificationCenter;
 
-    public MainUI(/*SpringViewProvider viewProvider,*/ NavigationManager navigationManager) {
+    @Autowired
+    public MainUI(/*SpringViewProvider viewProvider,*/NavigationManager navigationManager) {
 //        this.viewProvider = viewProvider;
         this.navigationManager = navigationManager;
         super.setNavigator(this.navigationManager);
@@ -89,8 +90,8 @@ public class MainUI extends UI {
         navigationManager.init(this, hybridMenu.getContent());
 
         // navigationManager.navigateTo(HomePage.class);
-        //setContent(new LoginPage());
-        navigationManager.navigateToLoginView();
+        setContent(new LoginPage(navigationManager));
+        // navigationManager.navigateToLoginView();
     }
 
     private void buildTopMenu(HybridMenu hybridMenu) {

@@ -21,6 +21,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Autowired;
+import ui.system.manager.NavigationManager;
 
 @SpringView
 public class LoginPage extends CssLayout implements View {
@@ -33,9 +35,17 @@ public class LoginPage extends CssLayout implements View {
     private Button login;
     private Button forgotPassword;
 
+    private NavigationManager navigationManager;
+
     public LoginPage() {
         buildUI();
         username.focus();
+    }
+
+    @Autowired
+    public LoginPage(NavigationManager navigationManager) {
+        this();
+        this.navigationManager = navigationManager;
     }
 
     @Override
@@ -145,6 +155,7 @@ public class LoginPage extends CssLayout implements View {
 
         un += (username.getValue()).toLowerCase();
 
+        navigationManager.navigateTo(SettingsPage.class);
         // DashboardEventBus.post(new UserLoginRequestedEvent(un, password.getValue(), false));
     }
 
