@@ -1,6 +1,5 @@
 package ui.views;
 
-import java.io.Serializable;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
@@ -40,9 +39,14 @@ public class LoginPage extends CssLayout implements View {
 //    @Autowired
 //    private MojServis mojServis;
     public LoginPage() {
-        Events.register(this);
         buildUI();
         username.focus();
+
+        initEventHandler();
+    }
+
+    private void initEventHandler() {
+        Events.register(this);
     }
 
     public LoginPage(NavigationManager navigationManager) {
@@ -108,10 +112,10 @@ public class LoginPage extends CssLayout implements View {
 
         buttons.addComponent(login = new Button("Login"));
         login.setDisableOnClick(true);
-        login.addClickListener((Button.ClickEvent event) -> {
+        login.addClickListener((Button.ClickEvent e) -> {
             try {
-                login();
-                Events.post(new Events.LoginTryEvent(username.getValue()));
+                getUsernameAndPassword();
+                Events.post(new Events.LoginSuccessEvent());
             } finally {
                 login.setEnabled(true);
             }
@@ -140,7 +144,7 @@ public class LoginPage extends CssLayout implements View {
         return loginInformation;
     }
 
-    private void login() {
+    private void getUsernameAndPassword() {
         String un;
 
         switch (((String) domain.getValue()).toLowerCase()) {
@@ -157,17 +161,10 @@ public class LoginPage extends CssLayout implements View {
         }
 
         un += (username.getValue()).toLowerCase();
-
-        // navigationManager.navigateTo(SettingsPage.class);
     }
 
     private void showNotification(Notification notification) {
         notification.setDelayMsec(3000);
         notification.show(Page.getCurrent());
-    }
-
-    public interface LoginListener extends Serializable {
-
-        void doAfterLogin();
     }
 }

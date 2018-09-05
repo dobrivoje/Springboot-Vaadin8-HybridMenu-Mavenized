@@ -1,9 +1,11 @@
 @import "addons.scss";
 @import "mytheme.scss";
 @import "shame.scss";
+/*@import "dashboard.scss";*/
 
 .mytheme {
   @include addons;
   @include mytheme;
   @include shame;
+  /*@include dashboard;*/
 }

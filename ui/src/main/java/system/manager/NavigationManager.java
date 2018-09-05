@@ -8,7 +8,6 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.internal.Conventions;
 import com.vaadin.spring.navigator.SpringNavigator;
 import system.util.SpringViewUtil;
-import ui.views.HomePage;
 import ui.views.LoginPage;
 
 /**
@@ -52,7 +51,7 @@ public class NavigationManager extends SpringNavigator {
         }
 
         // Change default view here
-        navigateTo(HomePage.class);
+        navigateTo(LoginPage.class);
     }
     
     public void navigateToLoginView() {

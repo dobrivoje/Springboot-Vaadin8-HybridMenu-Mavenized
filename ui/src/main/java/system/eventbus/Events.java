@@ -45,6 +45,9 @@ public class Events {
         }
     }
 
+    public static final class LoginSuccessEvent {
+    }
+
     public static final class MainMenuClickEvent {
     }
     //</editor-fold>

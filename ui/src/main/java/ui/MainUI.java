@@ -10,7 +10,6 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.server.Responsive;
 import kaesdingeling.hybridmenu.HybridMenu;
 import kaesdingeling.hybridmenu.builder.HybridMenuBuilder;
 import kaesdingeling.hybridmenu.builder.NotificationBuilder;
@@ -42,6 +41,7 @@ import com.vaadin.ui.Button;
 import system.manager.SpringViewChangeManager;
 import system.manager.NavigationManager;
 import com.google.common.eventbus.Subscribe;
+import com.vaadin.spring.navigator.SpringViewProvider;
 
 @SpringUI
 @Theme("mytheme")
@@ -50,36 +50,38 @@ import com.google.common.eventbus.Subscribe;
 @SuppressWarnings("serial")
 public class MainUI extends UI {
 
-//    private final SpringViewProvider viewProvider;
-    private final NavigationManager navigationManager;
+    private SpringViewProvider viewProvider;
+    private NavigationManager navigationManager;
 
     private HybridMenu hybridMenu;
     private NotificationCenter notificationCenter;
+    private MenuConfig menuConfig;
 
-    @Autowired
-    public MainUI(/*SpringViewProvider viewProvider,*/NavigationManager navigationManager) {
-        this.navigationManager = navigationManager;
-        super.setNavigator(this.navigationManager);
+    public MainUI() {
+        menuConfig = new MenuConfig();
+        this.notificationCenter = new NotificationCenter(5000);
     }
 
-    @Subscribe
-    public void loginTry(Events.LoginTryEvent lte) {
-        System.err.println("Events.LoginTryEvent        class : " + getClass() + "          ->           " + lte.getUsername());
+    @Autowired
+    public MainUI(SpringViewProvider viewProvider, NavigationManager navigationManager) {
+        this();
+        this.navigationManager = navigationManager;
+        this.viewProvider = viewProvider;
     }
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        super.setNavigator(this.navigationManager);
+
         Events.register(this);
-        Events.post(new Events.LoginTryEvent("DOBRILO !!!"));
+        Events.post(new Events.LoginTryEvent(getClass() + " -> init."));
+        setContent(new LoginPage());
+    }
 
-        Responsive.makeResponsive(this);
+    private void setMainPage() {
+        // UI.getCurrent().setPollInterval(5000);
 
-        UI.getCurrent().setPollInterval(5000);
-
-        MenuConfig menuConfig = new MenuConfig();
         menuConfig.setDesignItem(DesignItem.getDarkDesign());
-
-        this.notificationCenter = new NotificationCenter(5000);
 
         this.hybridMenu = HybridMenuBuilder.get()
                 .setContent(new VerticalLayout())
@@ -90,22 +92,14 @@ public class MainUI extends UI {
                 .withViewChangeManager(new SpringViewChangeManager())
                 .build();
 
-        // Define the TopMenu in this method
         buildTopMenu(this.hybridMenu);
-
-        // Define the LeftMenu in this method
         buildLeftMenu(this.hybridMenu);
 
         setContent(this.hybridMenu);
         navigationManager.init(this, hybridMenu.getContent());
-
-        navigationManager.navigateTo(HomePage.class);
-        // setContent(new LoginPage());
-        // navigationManager.navigateToLoginView();
     }
 
     private void buildTopMenu(HybridMenu hybridMenu) {
-
         TopMenuButtonBuilder.get()
                 .setCaption("Home")
                 .setIcon(VaadinIcons.HOME)
@@ -301,8 +295,14 @@ public class MainUI extends UI {
         return hybridMenu;
     }
 
-    protected void showMainView() {
-//        setContent(new MainScreen(MainUI.this));
-        navigationManager.navigateTo(HomePage.class);
+    @Subscribe
+    public void loginTry(Events.LoginTryEvent lte) {
+        System.err.println("Events.LoginTryEvent        class : " + getClass() + "          ->           " + lte.getUsername());
+    }
+
+    @Subscribe
+    public void loginSuccess(Events.LoginSuccessEvent lse) {
+        System.err.println("Events.LoginSuccessFullEvent        class : " + getClass());
+        setMainPage();
     }
 }
