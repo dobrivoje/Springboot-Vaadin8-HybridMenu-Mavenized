@@ -1,19 +1,19 @@
-package ui.system.manager;
+package system.uimanagement;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.internal.Conventions;
 import com.vaadin.spring.navigator.SpringNavigator;
-import ui.system.util.SpringViewUtil;
 import ui.views.HomePage;
-import org.springframework.stereotype.Component;
+import ui.views.LoginPage;
 
 /**
  * Governs view navigation of the app.
  */
-@Component
+@SpringComponent
 @UIScope
 public class NavigationManager extends SpringNavigator {
 
@@ -52,6 +52,14 @@ public class NavigationManager extends SpringNavigator {
 
         // Change default view here
         navigateTo(HomePage.class);
+    }
+    
+    public void navigateToLoginView() {
+        if (!getState().isEmpty()) {
+            return;
+        }
+
+        navigateTo(LoginPage.class);
     }
 
     /**

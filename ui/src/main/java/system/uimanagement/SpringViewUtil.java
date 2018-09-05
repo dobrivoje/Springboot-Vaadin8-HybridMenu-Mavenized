@@ -1,4 +1,4 @@
-package ui.system.util;
+package system.uimanagement;
 
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
@@ -20,5 +20,4 @@ public class SpringViewUtil {
 
         return Conventions.deriveMappingForView(viewClass, springView);
     }
-
 }
