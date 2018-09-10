@@ -21,10 +21,11 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import system.eventbus.Events;
-import system.manager.NavigationManager;
 
-@SpringView
+@SpringView(name = LoginPage.NAME)
 public class LoginPage extends CssLayout implements View {
+
+    public static final String NAME = "login";
 
     public static final String[] DOMAINS = new String[]{/*"INTERMOL", "RIS",*/"SERVER"};
     private TextField username;
@@ -47,11 +48,6 @@ public class LoginPage extends CssLayout implements View {
 
     private void initEventHandler() {
         Events.register(this);
-    }
-
-    public LoginPage(NavigationManager navigationManager) {
-        this();
-        // this.navigationManager = navigationManager;
     }
 
     @Override

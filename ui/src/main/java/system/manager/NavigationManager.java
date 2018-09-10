@@ -38,8 +38,9 @@ public class NavigationManager extends SpringNavigator {
         // Check if the ViewProvider has a view that fits the requested view
         if (null == this.getViewProvider(navigationState)) {
             // If it does not provide a view, try a view name that respects Springs conventions
-            navigationState = Conventions.upperCamelToLowerHyphen(navigationState);
+//            navigationState = Conventions.upperCamelToLowerHyphen(navigationState);
         }
+//        super.navigateTo(navigationState);
         super.navigateTo(navigationState);
     }
 
@@ -51,7 +52,7 @@ public class NavigationManager extends SpringNavigator {
         }
 
         // Change default view here
-        navigateTo(LoginPage.class);
+        navigateToLoginView();
     }
     
     public void navigateToLoginView() {
@@ -59,7 +60,7 @@ public class NavigationManager extends SpringNavigator {
             return;
         }
 
-        navigateTo(LoginPage.class);
+        navigateTo(LoginPage.NAME);
     }
 
     /**

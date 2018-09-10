@@ -1,6 +1,5 @@
 package ui.views;
 
-import ui.MainUI;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.vaadin.icons.VaadinIcons;
@@ -24,9 +23,12 @@ import kaesdingeling.hybridmenu.data.DesignItem;
 import kaesdingeling.hybridmenu.data.enums.ENotificationPriority;
 
 import javax.annotation.PostConstruct;
+import ui.MainUI;
 
-@SpringView
+@SpringView(name = ThemeBuilderPage.NAME)
 public class ThemeBuilderPage extends VerticalLayout implements View {
+
+    public static final String NAME = "theme";
 
     private DesignItem designItem;
     private boolean lockForLoad = true;

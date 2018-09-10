@@ -6,14 +6,13 @@ import com.vaadin.server.Responsive;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import javax.annotation.PostConstruct;
-import org.springframework.context.annotation.Lazy;
-import com.vaadin.spring.annotation.SpringComponent;
 
-@SpringView
-@SpringComponent
-@Lazy(false)
+import javax.annotation.PostConstruct;
+
+@SpringView(name = SettingsPage.NAME)
 public class SettingsPage extends VerticalLayout implements View {
+
+    public static final String NAME = "settings";
 
     @PostConstruct
     void init() {
