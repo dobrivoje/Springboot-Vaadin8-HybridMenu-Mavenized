@@ -55,55 +55,58 @@ public class MainUI extends UI {
     private final NavigationManager navigationManager;
 
     private HybridMenu hybridMenu;
-    private final NotificationCenter notificationCenter = new NotificationCenter(5000);
+    private final NotificationCenter notificationCenter;
     private final MenuConfig menuConfig = new MenuConfig();
 
     @Autowired
+    private Events events;
+
+    @Autowired
+    private SpringViewChangeManager springViewChangeManager;
+
+    // @Autowired
+    // private LoginPage loginPage;
+    @Autowired
     public MainUI(SpringViewProvider viewProvider, NavigationManager navigationManager) {
+        notificationCenter = new NotificationCenter(5000);
+
         this.viewProvider = viewProvider;
         this.navigationManager = navigationManager;
-//        this.navigationManager.addProvider(viewProvider);
+        this.navigationManager.addProvider(this.viewProvider);
     }
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        events.register(this);
+
+        // navigationManager.addProvider(viewProvider);
         setNavigator(navigationManager);
 
-        Events.register(this);
-        Events.post(new Events.LoginTryEvent(getClass() + " -> init."));
-
-        navigationManager.addView(LoginPage.NAME, viewProvider.getView(LoginPage.NAME));
-        navigationManager.addView(HomePage.NAME, viewProvider.getView(HomePage.NAME));
-        navigationManager.addView(GroupPage.NAME, viewProvider.getView(GroupPage.NAME));
-        navigationManager.addView(MemberPage.NAME, viewProvider.getView(MemberPage.NAME));
-        navigationManager.addView(SettingsPage.NAME, viewProvider.getView(SettingsPage.NAME));
-        navigationManager.addView(ThemeBuilderPage.NAME, viewProvider.getView(ThemeBuilderPage.NAME));
-
+        navigationManager.setErrorProvider(viewProvider);
         navigationManager.setErrorView(viewProvider.getView(ErrorPage.NAME));
+//
+//        navigationManager.addView(LoginPage.NAME, viewProvider.getView(LoginPage.NAME));
+//        navigationManager.addView(HomePage.NAME, viewProvider.getView(HomePage.NAME));
+//        navigationManager.addView(GroupPage.NAME, viewProvider.getView(GroupPage.NAME));
+//        navigationManager.addView(MemberPage.NAME, viewProvider.getView(MemberPage.NAME));
+//        navigationManager.addView(SettingsPage.NAME, viewProvider.getView(SettingsPage.NAME));
+//        navigationManager.addView(ThemeBuilderPage.NAME, viewProvider.getView(ThemeBuilderPage.NAME));
 
         LoginPage loginPage = new LoginPage();
         navigationManager.init(this, loginPage);
         setContent(loginPage);
         navigationManager.navigateToLoginView();
-    }
 
-    private void setMainPage() {
         menuConfig.setDesignItem(DesignItem.getDarkDesign());
 
-        this.hybridMenu = HybridMenuBuilder.get()
+        hybridMenu = HybridMenuBuilder.get()
                 .setContent(new VerticalLayout())
                 .setMenuComponent(EMenuComponents.LEFT_WITH_TOP)
                 .setConfig(menuConfig)
                 .withNotificationCenter(this.notificationCenter)
                 .setInitNavigator(false)
-                .withViewChangeManager(new SpringViewChangeManager())
+                .withViewChangeManager(springViewChangeManager)
                 .build();
-
-        buildTopMenu(this.hybridMenu);
-        buildLeftMenu(this.hybridMenu);
-
-        setContent(this.hybridMenu);
-        navigationManager.navigateTo(HomePage.NAME);
     }
 
     private void buildTopMenu(HybridMenu hybridMenu) {
@@ -111,7 +114,7 @@ public class MainUI extends UI {
                 .setCaption("Home")
                 .setIcon(VaadinIcons.HOME)
                 .setAlignment(Alignment.MIDDLE_RIGHT)
-                .setNavigateTo(HomePage.class)
+                .setNavigateToName(HomePage.NAME)
                 .build(hybridMenu);
 
         TopMenuButtonBuilder.get()
@@ -119,7 +122,7 @@ public class MainUI extends UI {
                 .setIcon(VaadinIcons.USER)
                 .setAlignment(Alignment.MIDDLE_RIGHT)
                 .setHideCaption(false)
-                .setNavigateTo(MemberPage.class)
+                .setNavigateToName(MemberPage.NAME)
                 .build(hybridMenu);
 
         TopMenuButtonBuilder.get()
@@ -128,7 +131,7 @@ public class MainUI extends UI {
                 .setAlignment(Alignment.MIDDLE_RIGHT)
                 .setHideCaption(false)
                 .addStyleName(EMenuStyle.ICON_RIGHT)
-                .setNavigateTo(MemberPage.class)
+                .setNavigateToName(MemberPage.NAME)
                 .build(hybridMenu);
 
         TopMenuSubContent userAccountMenu = TopMenuSubContentBuilder.get()
@@ -144,13 +147,16 @@ public class MainUI extends UI {
         userAccountMenu.addButton("Test");
         userAccountMenu.addHr();
         userAccountMenu.addButton("Test 2");
+        userAccountMenu.getButton().addClickListener((Button.ClickEvent event) -> {
+            System.err.println(event.getButton().getId());
+        });
 
         TopMenuButtonBuilder.get()
                 .setCaption("Home")
                 .setIcon(VaadinIcons.HOME)
                 .setAlignment(Alignment.MIDDLE_RIGHT)
                 .setToolTip("2")
-                .setNavigateTo(HomePage.class)
+                .setNavigateToName(HomePage.NAME)
                 .build(hybridMenu);
 
         TopMenuButton notiButton = TopMenuButtonBuilder.get()
@@ -217,7 +223,7 @@ public class MainUI extends UI {
         TopMenuButtonBuilder.get()
                 .setCaption("Home")
                 .setIcon(VaadinIcons.HOME)
-                .setNavigateTo(HomePage.class)
+                .setNavigateToName(HomePage.NAME)
                 .build(hybridMenu);
 
     }
@@ -244,7 +250,7 @@ public class MainUI extends UI {
                 .withIcon(VaadinIcons.COGS)
                 .withNavigateTo(SettingsPage.NAME)
                 .withClickListener((Button.ClickEvent e) -> {
-                    Events.post(new Events.MainMenuClickEvent());
+                    events.post(new Events.MainMenuClickEvent());
                 }).build();
 
         hybridMenu.addLeftMenuButton(settingsButton);
@@ -311,5 +317,13 @@ public class MainUI extends UI {
     public void loginSuccess(Events.LoginSuccessEvent lse) {
         System.err.println("Events.LoginSuccessFullEvent        class : " + getClass());
         setMainPage();
+    }
+
+    private void setMainPage() {
+        buildTopMenu(hybridMenu);
+        buildLeftMenu(hybridMenu);
+
+        setContent(hybridMenu);
+        navigationManager.navigateTo(HomePage.NAME);
     }
 }

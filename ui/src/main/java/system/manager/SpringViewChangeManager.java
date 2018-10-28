@@ -6,7 +6,9 @@ import kaesdingeling.hybridmenu.data.leftmenu.MenuButton;
 import kaesdingeling.hybridmenu.data.leftmenu.MenuSubMenu;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import kaesdingeling.hybridmenu.utils.ViewChangeManager;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SpringViewChangeManager implements ViewChangeManager {
 
     @Override
@@ -22,8 +24,8 @@ public class SpringViewChangeManager implements ViewChangeManager {
                     boolean setButtonActive = false;
                     if (menuButton.getNavigateToName() != null) {
                         String navigateToName = menuButton.getNavigateToName();
-                        if (navigateToName.startsWith(event.getNewView().getClass().getSimpleName())) {
-                            if (navigateToName.equals(event.getNewView().getClass().getSimpleName())) {
+                        if (navigateToName.startsWith(event.getViewName())) {
+                            if (navigateToName.equals(event.getViewName())) {
                                 setButtonActive = true;
                             } else if (navigateToName.equals(event.getViewName() + "/" + event.getParameters())) {
                                 setButtonActive = true;
@@ -52,7 +54,7 @@ public class SpringViewChangeManager implements ViewChangeManager {
                     MenuSubMenu menuSubMenu = (MenuSubMenu) component;
                     if (manage(menuSubMenu.getSubMenuContent(), event)) {
                         foundActiveButton = true;
-                        
+
                         if (!menuSubMenu.isOpen()) {
                             menuSubMenu.setOpen(true);
                         }

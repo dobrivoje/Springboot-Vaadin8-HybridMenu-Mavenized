@@ -21,7 +21,11 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
 import system.eventbus.Events;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.vaadin.spring.annotation.UIScope;
 
+@UIScope
 @SpringView(name = LoginPage.NAME)
 public class LoginPage extends CssLayout implements View {
 
@@ -35,19 +39,20 @@ public class LoginPage extends CssLayout implements View {
     private Button login;
     private Button forgotPassword;
 
-//    @Autowired
-//    private NavigationManager navigationManager;
-//    @Autowired
-//    private MojServis mojServis;
+    // @Autowired
+    // private MojServis mojServis;
+    //
+    @Autowired
+    private Events events;
+
     public LoginPage() {
         buildUI();
         username.focus();
-
-        initEventHandler();
     }
 
-    private void initEventHandler() {
-        Events.register(this);
+    @PostConstruct
+    protected void initEvents() {
+        events.register(this);
     }
 
     @Override
@@ -107,16 +112,16 @@ public class LoginPage extends CssLayout implements View {
         loginForm.addComponent(buttons);
 
         buttons.addComponent(login = new Button("Login"));
+        login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         login.setDisableOnClick(true);
         login.addClickListener((Button.ClickEvent e) -> {
             try {
                 getUsernameAndPassword();
-                Events.post(new Events.LoginSuccessEvent());
+                events.post(new Events.LoginSuccessEvent());
             } finally {
                 login.setEnabled(true);
             }
         });
-        login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 
         buttons.addComponent(forgotPassword = new Button("Fotgotten password"));
         forgotPassword.addClickListener((Button.ClickEvent e) -> {

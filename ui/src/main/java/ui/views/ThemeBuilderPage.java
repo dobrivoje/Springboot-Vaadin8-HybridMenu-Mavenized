@@ -15,15 +15,14 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.server.Responsive;
 import kaesdingeling.hybridmenu.builder.NotificationBuilder;
 import kaesdingeling.hybridmenu.data.DesignItem;
 import kaesdingeling.hybridmenu.data.enums.ENotificationPriority;
-
 import javax.annotation.PostConstruct;
 import ui.MainUI;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringView(name = ThemeBuilderPage.NAME)
 public class ThemeBuilderPage extends VerticalLayout implements View {
@@ -33,55 +32,63 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
     private DesignItem designItem;
     private boolean lockForLoad = true;
 
+    @Autowired
+    private MainUI mainUI;
+
+    //<editor-fold defaultstate="collapsed" desc="GUI fields">
     /* Colors */
-    private final FormLayout colorsForm = buildForm("Colors");
-    private final ColorPicker darkColor = buildPicker(colorsForm, "Dark-Color");
-    private final ColorPicker whiteColor = buildPicker(colorsForm, "White-Color");
+    private FormLayout colorsForm;
+    private ColorPicker darkColor;
+    private ColorPicker whiteColor;
 
     /* Content-Background */
-    private final FormLayout contentBackgroundForm = buildForm("Content-Background");
-    private final ColorPicker contentBackground = buildPicker(contentBackgroundForm, "Content-Background");
+    private FormLayout contentBackgroundForm;
+    private ColorPicker contentBackground;
 
     /* Notifications */
-    private final FormLayout notificationForm = buildForm("Notifications");
-    private final ColorPicker notificationPrioLow = buildPicker(notificationForm, "Notification-Prio-Low");
-    private final ColorPicker notificationPrioMedium = buildPicker(notificationForm, "Notification-Prio-Medium");
-    private final ColorPicker notificationPrioHigh = buildPicker(notificationForm, "Notification-Prio-High");
-    private final Slider notificationBorderColorOpacity = buildSlider(notificationForm, "Notification-Border-Color-Opacity");
-    private final Slider notificationShadow = buildSlider(notificationForm, "Notification-Shadow");
-    private final ColorPicker notificationCloseButtonHover = buildPicker(notificationForm, "Notification-Close-Button-Hover");
-    private final Slider notificationCloseButtonOpacity = buildSlider(notificationForm, "Notification-Close-Button-Opacity");
+    private FormLayout notificationForm;
+    private ColorPicker notificationPrioLow;
+    private ColorPicker notificationPrioMedium;
+    private ColorPicker notificationPrioHigh;
+    private Slider notificationBorderColorOpacity;
+    private Slider notificationShadow;
+    private ColorPicker notificationCloseButtonHover;
+    private Slider notificationCloseButtonOpacity;
 
     /* Left-Menu */
-    private final FormLayout leftMenuForm = buildForm("Left-Menu");
-    private final ColorPicker leftMenuBackground = buildPicker(leftMenuForm, "Left-Menu-Background");
-    private final ColorPicker leftMenuShadow = buildPicker(leftMenuForm, "Left-Menu-Shadow");
-    private final Slider leftMenuShadowOpacity = buildSlider(leftMenuForm, "Left-Menu-Shadow-Opacity");
-    private final Slider leftMenuButtonOpacity = buildSlider(leftMenuForm, "Left-Menu-Button-Opacity");
-    private final ColorPicker leftMenuButtonHover = buildPicker(leftMenuForm, "Left-Menu-Button-Hover");
-    private final ColorPicker leftMenuButtonBorderHover = buildPicker(leftMenuForm, "Left-Menu-Button-Border-Hover");
-    private final ColorPicker leftMenuButtonActive = buildPicker(leftMenuForm, "Left-Menu-Button-Active");
-    private final ColorPicker leftMenuButtonBorderActive = buildPicker(leftMenuForm, "Left-Menu-Button-Border-Active");
-    private final ColorPicker leftMenuSubMenuBorder = buildPicker(leftMenuForm, "Left-Menu-Sub-Menu-Border");
-    private final ColorPicker leftMenuButtonTooltip = buildPicker(leftMenuForm, "Left-Menu-Button-Tooltip");
+    private FormLayout leftMenuForm;
+    private ColorPicker leftMenuBackground;
+    private ColorPicker leftMenuShadow;
+    private Slider leftMenuShadowOpacity;
+    private Slider leftMenuButtonOpacity;
+    private ColorPicker leftMenuButtonHover;
+    private ColorPicker leftMenuButtonBorderHover;
+    private ColorPicker leftMenuButtonActive;
+    private ColorPicker leftMenuButtonBorderActive;
+    private ColorPicker leftMenuSubMenuBorder;
+    private ColorPicker leftMenuButtonTooltip;
 
     /* Top-Menu */
-    private final FormLayout topMenuForm = buildForm("Top-Menu");
-    private final ColorPicker topMenuBackground = buildPicker(topMenuForm, "Top-Menu-Background");
-    private final ColorPicker topMenuShadow = buildPicker(topMenuForm, "Top-Menu-Shadow-Two");
-    private final Slider topMenuShadowOpacity = buildSlider(topMenuForm, "Top-Menu-Shadow-Opacity");
-    private final ColorPicker topMenuButtonHover = buildPicker(topMenuForm, "Top-Menu-Button-Hover");
-    private final ColorPicker topMenuButtonActive = buildPicker(topMenuForm, "Top-Menu-Button-Active");
-    private final ColorPicker topMenuButtonBorder = buildPicker(topMenuForm, "Top-Menu-Button-Border");
-    private final ColorPicker topMenuButtonTooltip = buildPicker(topMenuForm, "Top-Menu-Button-Tooltip");
+    private FormLayout topMenuForm;
+    private ColorPicker topMenuBackground;
+    private ColorPicker topMenuShadow;
+    private Slider topMenuShadowOpacity;
+    private ColorPicker topMenuButtonHover;
+    private ColorPicker topMenuButtonActive;
+    private ColorPicker topMenuButtonBorder;
+    private ColorPicker topMenuButtonTooltip;
 
-    private final TextArea jsonOutput = new TextArea("JSON-Output");
-
-    private final Button importButton = new Button("Import JSON");
+    private TextArea jsonOutput;
+    private Button importButton;
+    //</editor-fold>
 
     @PostConstruct
     void init() {
         Responsive.makeResponsive(this);
+
+        guiFieldsInit();
+        buildNewObject();
+        load();
 
         Label title = new Label();
         title.setCaption("Theme Builder");
@@ -92,14 +99,11 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
 
         addComponents(title, colorsForm, contentBackgroundForm, notificationForm, leftMenuForm, topMenuForm, jsonOutput, importButton);
 
-        buildNewObject();
-        load();
-
         importButton.addClickListener(e -> {
             lockForLoad = true;
             try {
                 designItem = new Gson().fromJson(jsonOutput.getValue(), DesignItem.class);
-                NotificationBuilder.get(((MainUI) UI.getCurrent()).getHybridMenu().getNotificationCenter())
+                NotificationBuilder.get(mainUI.getHybridMenu().getNotificationCenter())
                         .withCaption("Import successful")
                         .withDescription("The design adapts itself automatically")
                         .withPriority(ENotificationPriority.MEDIUM)
@@ -107,7 +111,7 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
                         .withCloseByHide()
                         .build();
             } catch (JsonSyntaxException e2) {
-                NotificationBuilder.get(((MainUI) UI.getCurrent()).getHybridMenu().getNotificationCenter())
+                NotificationBuilder.get(mainUI.getHybridMenu().getNotificationCenter())
                         .withCaption("Import failed")
                         .withDescription("The entry was rejected")
                         .withPriority(ENotificationPriority.MEDIUM)
@@ -124,6 +128,53 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
 
         update();
         lockForLoad = false;
+    }
+
+    private void guiFieldsInit() {
+        /* Colors */
+        colorsForm = buildForm("Colors");
+        darkColor = buildPicker(colorsForm, "Dark-Color");
+        whiteColor = buildPicker(colorsForm, "White-Color");
+
+        /* Content-Background */
+        contentBackgroundForm = buildForm("Content-Background");
+        contentBackground = buildPicker(contentBackgroundForm, "Content-Background");
+
+        /* Notifications */
+        notificationForm = buildForm("Notifications");
+        notificationPrioLow = buildPicker(notificationForm, "Notification-Prio-Low");
+        notificationPrioMedium = buildPicker(notificationForm, "Notification-Prio-Medium");
+        notificationPrioHigh = buildPicker(notificationForm, "Notification-Prio-High");
+        notificationBorderColorOpacity = buildSlider(notificationForm, "Notification-Border-Color-Opacity");
+        notificationShadow = buildSlider(notificationForm, "Notification-Shadow");
+        notificationCloseButtonHover = buildPicker(notificationForm, "Notification-Close-Button-Hover");
+        notificationCloseButtonOpacity = buildSlider(notificationForm, "Notification-Close-Button-Opacity");
+
+        /* Left-Menu */
+        leftMenuForm = buildForm("Left-Menu");
+        leftMenuBackground = buildPicker(leftMenuForm, "Left-Menu-Background");
+        leftMenuShadow = buildPicker(leftMenuForm, "Left-Menu-Shadow");
+        leftMenuShadowOpacity = buildSlider(leftMenuForm, "Left-Menu-Shadow-Opacity");
+        leftMenuButtonOpacity = buildSlider(leftMenuForm, "Left-Menu-Button-Opacity");
+        leftMenuButtonHover = buildPicker(leftMenuForm, "Left-Menu-Button-Hover");
+        leftMenuButtonBorderHover = buildPicker(leftMenuForm, "Left-Menu-Button-Border-Hover");
+        leftMenuButtonActive = buildPicker(leftMenuForm, "Left-Menu-Button-Active");
+        leftMenuButtonBorderActive = buildPicker(leftMenuForm, "Left-Menu-Button-Border-Active");
+        leftMenuSubMenuBorder = buildPicker(leftMenuForm, "Left-Menu-Sub-Menu-Border");
+        leftMenuButtonTooltip = buildPicker(leftMenuForm, "Left-Menu-Button-Tooltip");
+
+        /* Top-Menu */
+        topMenuForm = buildForm("Top-Menu");
+        topMenuBackground = buildPicker(topMenuForm, "Top-Menu-Background");
+        topMenuShadow = buildPicker(topMenuForm, "Top-Menu-Shadow-Two");
+        topMenuShadowOpacity = buildSlider(topMenuForm, "Top-Menu-Shadow-Opacity");
+        topMenuButtonHover = buildPicker(topMenuForm, "Top-Menu-Button-Hover");
+        topMenuButtonActive = buildPicker(topMenuForm, "Top-Menu-Button-Active");
+        topMenuButtonBorder = buildPicker(topMenuForm, "Top-Menu-Button-Border");
+        topMenuButtonTooltip = buildPicker(topMenuForm, "Top-Menu-Button-Tooltip");
+
+        jsonOutput = new TextArea("JSON-Output");
+        importButton = new Button("Import JSON");
     }
 
     private void load() {
@@ -208,7 +259,7 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
 
     private void update() {
         write();
-        ((MainUI) UI.getCurrent()).getHybridMenu().switchTheme(designItem);
+//        mainUI.getHybridMenu().switchTheme(designItem);
         jsonOutput.setValue(new Gson().toJson(designItem));
     }
 

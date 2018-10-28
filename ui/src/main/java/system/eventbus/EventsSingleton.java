@@ -1,23 +1,32 @@
 package system.eventbus;
 
 import com.google.common.eventbus.EventBus;
-import org.springframework.stereotype.Service;
 
-@Service
-public class Events {
+@Deprecated
+public class EventsSingleton {
 
     //<editor-fold defaultstate="collapsed" desc="singleton infra">
-    private final EventBus eventBus = new EventBus();
+    private static final EventBus eventBus = new EventBus();
 
-    public void register(Object listener) {
+    public static EventsSingleton getInstance() {
+        return EventsHolder.INSTANCE;
+    }
+
+    private static class EventsHolder {
+
+        private static final EventsSingleton INSTANCE = new EventsSingleton();
+    }
+    //</editor-fold>
+
+    public static void register(Object listener) {
         eventBus.register(listener);
     }
 
-    public void post(Object event) {
+    public static void post(Object event) {
         eventBus.post(event);
     }
 
-    //<editor-fold defaultstate="collapsed" desc="Events">
+    //<editor-fold defaultstate="collapsed" desc="EventsSingleton">
     public static final class LoginTryEvent {
 
         private String username;
