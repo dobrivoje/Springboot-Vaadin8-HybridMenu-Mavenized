@@ -1,30 +1,29 @@
 package system.eventbus;
 
 import com.google.common.eventbus.EventBus;
-import org.springframework.stereotype.Service;
+import com.google.common.eventbus.SubscriberExceptionContext;
+import com.google.common.eventbus.SubscriberExceptionHandler;
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-@Service
-public class Events {
+@Component
+@Scope(SCOPE_PROTOTYPE)
+public class Events implements SubscriberExceptionHandler {
 
-    //<editor-fold defaultstate="collapsed" desc="singleton infra">
-    private static final EventBus eventBus = new EventBus();
+    private final EventBus BUS = new EventBus(this);
 
-    public static Events getInstance() {
-        return EventsHolder.INSTANCE;
+    public void register(Object listener) {
+        BUS.register(listener);
     }
 
-    private static class EventsHolder {
-
-        private static final Events INSTANCE = new Events();
-    }
-    //</editor-fold>
-
-    public static void register(Object listener) {
-        eventBus.register(listener);
+    public void post(Object event) {
+        BUS.post(event);
     }
 
-    public static void post(Object event) {
-        eventBus.post(event);
+    @Override
+    public void handleException(Throwable thrwbl, SubscriberExceptionContext sec) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     //<editor-fold defaultstate="collapsed" desc="Events">

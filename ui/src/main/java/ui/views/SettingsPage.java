@@ -7,13 +7,22 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import javax.annotation.PostConstruct;
-import org.springframework.context.annotation.Lazy;
-import com.vaadin.spring.annotation.SpringComponent;
+import org.springframework.beans.factory.annotation.Autowired;
+import system.eventbus.Events;
 
-@SpringView
-@SpringComponent
-@Lazy(false)
+@SpringView(name = SettingsPage.NAME)
+//@SpringComponent
+//@Lazy(false)
 public class SettingsPage extends VerticalLayout implements View {
+
+    public static final String NAME = "settings";
+
+    @Autowired
+    private Events events;
+
+    public SettingsPage() {
+        System.err.println(events == null);
+    }
 
     @PostConstruct
     void init() {
@@ -23,6 +32,7 @@ public class SettingsPage extends VerticalLayout implements View {
         title.setCaption("Settings");
         title.setValue("Settings view");
         addComponent(title);
+        events.post(new Events.LoginTryEvent("2. settings page..."));
     }
 
     @Override

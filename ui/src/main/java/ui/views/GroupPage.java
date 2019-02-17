@@ -8,8 +8,10 @@ import com.vaadin.ui.VerticalLayout;
 
 import javax.annotation.PostConstruct;
 
-@SpringView
+@SpringView(name = GroupPage.NAME)
 public class GroupPage extends VerticalLayout implements View {
+
+    public static final String NAME = "group";
 
     @PostConstruct
     void init() {

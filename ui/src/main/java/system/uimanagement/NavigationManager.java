@@ -51,7 +51,7 @@ public class NavigationManager extends SpringNavigator {
         }
 
         // Change default view here
-        navigateTo(HomePage.class);
+        navigateTo(HomePage.NAME);
     }
     
     public void navigateToLoginView() {

@@ -13,16 +13,20 @@ import com.vaadin.server.Responsive;
 import org.springframework.beans.factory.annotation.Autowired;
 import ui.views.MemberPage;
 import ui.views.SettingsPage;
-import system.uimanagement.ThemeBuilderPage;
+import ui.views.ThemeBuilderPage;
 import ui.views.GroupPage;
 import ui.views.HomePage;
 import system.eventbus.Events;
 import system.uimanagement.NavigationManager;
 import com.google.common.eventbus.Subscribe;
+import com.vaadin.data.HasValue;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ClientConnector.DetachListener;
 import com.vaadin.server.Page;
+import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.JavaScript;
+import com.vaadin.ui.Notification;
 import elemental.json.JsonArray;
 import kaesdingeling.hybridmenu.HybridMenu;
 import kaesdingeling.hybridmenu.components.HMButton;
@@ -34,25 +38,32 @@ import kaesdingeling.hybridmenu.components.NotificationCenter;
 import kaesdingeling.hybridmenu.components.TopMenu;
 import kaesdingeling.hybridmenu.data.MenuConfig;
 import kaesdingeling.hybridmenu.design.DesignItem;
-import system.uimanagement.NotificationBuilderPage;
+import ui.views.ErrorPage;
+import ui.views.NotificationBuilderPage;
 
 @SpringUI
 @Theme("mytheme")
-@Viewport("width=device-width,initial-scale=1.0,user-scalable=no")
+@Viewport("width=device-width,initial-scale=1.0,user-scalable=yes")
 @Title("Vaadin Spring Boot with HybridMenu Template")
 @SuppressWarnings("serial")
 public class MainUI extends UI implements DetachListener {
 
-//    private final SpringViewProvider viewProvider;
+    private final SpringViewProvider viewProvider;
     private final NavigationManager navigationManager;
 
     private HybridMenu hybridMenu;
     private NotificationCenter notificationCenter;
 
     @Autowired
-    public MainUI(/*SpringViewProvider viewProvider,*/NavigationManager navigationManager) {
+    private Events events;
+
+    @Autowired
+    public MainUI(SpringViewProvider viewProvider, NavigationManager navigationManager) {
         this.navigationManager = navigationManager;
-        super.setNavigator(this.navigationManager);
+        this.viewProvider = viewProvider;
+        this.navigationManager.addProvider(viewProvider);
+
+        super.setNavigator(navigationManager);
     }
 
     @Subscribe
@@ -62,8 +73,8 @@ public class MainUI extends UI implements DetachListener {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        Events.register(this);
-        Events.post(new Events.LoginTryEvent("DOBRILO !!!"));
+        events.register(this);
+        events.post(new Events.LoginTryEvent("DOBRILO !!!"));
 
         Responsive.makeResponsive(this);
 
@@ -78,10 +89,21 @@ public class MainUI extends UI implements DetachListener {
         buildLeftMenu();
 
         getNavigator().addViewChangeListener((ViewChangeListener.ViewChangeEvent event) -> {
+//        navigationManager.addViewChangeListener((ViewChangeListener.ViewChangeEvent event) -> {
             if (event.getOldView() != null && event.getOldView().getClass().getSimpleName().equals(ThemeBuilderPage.class.getSimpleName())) {
                 hybridMenu.switchTheme(DesignItem.getDarkDesign());
             }
             return true;
+        });
+
+        UI.getCurrent().getNavigator().setErrorProvider(viewProvider);
+        navigationManager.setErrorProvider(viewProvider);
+        setErrorHandler((com.vaadin.server.ErrorEvent event) -> {
+//            navigationManager.navigateToLoginView();
+//            navigationManager.navigateTo("loginPage");
+            Notification.show("Sorry, you don't have access to do that.");
+
+            navigationManager.navigateTo(ErrorPage.NAME);
         });
 
         setContent(hybridMenu);
@@ -95,12 +117,18 @@ public class MainUI extends UI implements DetachListener {
 
     private void buildTopOnlyMenu() {
         TopMenu topMenu = hybridMenu.getTopMenu();
-        topMenu.add(HMTextField.get(VaadinIcons.SEARCH, "Search ..."));
+        HMTextField searcher = HMTextField.get(VaadinIcons.SEARCH, "Search ...");
+        searcher.setValueChangeMode(ValueChangeMode.LAZY);
+        searcher.addValueChangeListener((HasValue.ValueChangeEvent<String> event) -> {
+            System.err.println("tražim... ->\nStaro : " + event.getOldValue() + "\nNovo : " + event.getValue());
+        });
+        topMenu.add(searcher);
 
         topMenu.add(HMButton.get()
                 .withIcon(VaadinIcons.HOME)
                 .withDescription("Home")
-                .withNavigateTo(HomePage.class));
+                // .withNavigateTo(HomePage.class));
+                .withNavigateTo(HomePage.NAME));
 
         hybridMenu.getNotificationCenter()
                 .setNotiButton(topMenu.add(HMButton.get()
@@ -117,17 +145,18 @@ public class MainUI extends UI implements DetachListener {
         hybridMenu.getBreadCrumbs().setRoot(leftMenu.add(HMButton.get()
                 .withCaption("Home")
                 .withIcon(VaadinIcons.HOME)
-                .withNavigateTo(HomePage.class)));
+                .withNavigateTo(HomePage.NAME)));
 
         leftMenu.add(HMButton.get()
                 .withCaption("Notification Builder")
                 .withIcon(VaadinIcons.BELL)
-                .withNavigateTo(NotificationBuilderPage.class));
+                // .withNavigateTo(NotificationBuilderPage.class));
+                .withNavigateTo(NotificationBuilderPage.NAME));
 
         leftMenu.add(HMButton.get()
                 .withCaption("Theme Builder")
                 .withIcon(VaadinIcons.WRENCH)
-                .withNavigateTo(ThemeBuilderPage.class));
+                .withNavigateTo(ThemeBuilderPage.NAME));
 
         HMSubMenu memberList = leftMenu.add(HMSubMenu.get()
                 .withCaption("Member")
@@ -136,17 +165,17 @@ public class MainUI extends UI implements DetachListener {
         memberList.add(HMButton.get()
                 .withCaption("Settings")
                 .withIcon(VaadinIcons.COGS)
-                .withNavigateTo(SettingsPage.class));
+                .withNavigateTo(SettingsPage.NAME));
 
         memberList.add(HMButton.get()
                 .withCaption("Member")
                 .withIcon(VaadinIcons.USERS)
-                .withNavigateTo(MemberPage.class));
+                .withNavigateTo(MemberPage.NAME));
 
         memberList.add(HMButton.get()
                 .withCaption("Group")
                 .withIcon(VaadinIcons.USERS)
-                .withNavigateTo(GroupPage.class));
+                .withNavigateTo(GroupPage.NAME));
 
         HMSubMenu memberListTwo = memberList.add(HMSubMenu.get()
                 .withCaption("Member")
@@ -155,12 +184,12 @@ public class MainUI extends UI implements DetachListener {
         memberListTwo.add(HMButton.get()
                 .withCaption("Settings")
                 .withIcon(VaadinIcons.COGS)
-                .withNavigateTo(SettingsPage.class));
+                .withNavigateTo(SettingsPage.NAME));
 
         memberListTwo.add(HMButton.get()
                 .withCaption("Member")
                 .withIcon(VaadinIcons.USERS)
-                .withNavigateTo(MemberPage.class));
+                .withNavigateTo(MemberPage.NAME));
 
         HMSubMenu demoSettings = leftMenu.add(HMSubMenu.get()
                 .withCaption("Settings")

@@ -21,11 +21,14 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Autowired;
 import system.eventbus.Events;
 import system.uimanagement.NavigationManager;
 
-@SpringView
+@SpringView(name = LoginPage.NAME)
 public class LoginPage extends CssLayout implements View {
+
+    public static final String NAME = "login-page";
 
     public static final String[] DOMAINS = new String[]{/*"INTERMOL", "RIS",*/"SERVER"};
     private TextField username;
@@ -39,8 +42,11 @@ public class LoginPage extends CssLayout implements View {
 //    private NavigationManager navigationManager;
 //    @Autowired
 //    private MojServis mojServis;
+    @Autowired
+    private Events events;
+
     public LoginPage() {
-        Events.register(this);
+        events.register(this);
         buildUI();
         username.focus();
     }
@@ -111,7 +117,7 @@ public class LoginPage extends CssLayout implements View {
         login.addClickListener((Button.ClickEvent event) -> {
             try {
                 login();
-                Events.post(new Events.LoginTryEvent(username.getValue()));
+                events.post(new Events.LoginTryEvent(username.getValue()));
             } finally {
                 login.setEnabled(true);
             }

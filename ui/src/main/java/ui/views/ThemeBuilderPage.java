@@ -1,4 +1,4 @@
-package system.uimanagement;
+package ui.views;
 
 import com.google.gson.Gson;
 import com.vaadin.navigator.View;
@@ -16,9 +16,15 @@ import kaesdingeling.hybridmenu.design.DesignColor;
 import kaesdingeling.hybridmenu.design.DesignItem;
 import ui.MainUI;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.spring.annotation.SpringView;
+import javax.annotation.PostConstruct;
 
+@SpringView(name = ThemeBuilderPage.NAME)
 public class ThemeBuilderPage extends VerticalLayout implements View {
 
+    public static final String NAME = "builder";
+
+    //<editor-fold defaultstate="collapsed" desc="fields">
     private DesignItem designItem;
     private boolean lockForLoad = true;
 
@@ -48,6 +54,12 @@ public class ThemeBuilderPage extends VerticalLayout implements View {
     private ColorPicker tooltipActiveBackground = buildPicker(tooltip, "Left-Menu-Button-Active-Tooltip");
 
     private TextArea jsonOutput = new TextArea("JSON-Output");
+    //</editor-fold>
+
+    @PostConstruct
+    void init() {
+        System.err.println(">>>>>>>>>>>     ThemeBuilderPage");
+    }
 
     @Override
     public void enter(ViewChangeEvent event) {
