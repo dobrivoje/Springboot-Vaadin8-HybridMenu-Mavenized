@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <!--<context:component-scan base-package="ui, system, service" />-->
+    
+    <beans profile="dev">
+        <bean id="s1" class="backend.persistence20.MojServis">
+            <property name="ime" value="nina" />
+            <property name="prezime" value="prtenjak" />
+        </bean>
+    </beans>
+    
+    <beans profile="prod">
+        <bean id="s2" class="backend.persistence20.MojServis">
+            <constructor-arg value="danijela" />
+            <constructor-arg value="lazović" />
+        </bean>
+    </beans>
+    
+    <beans profile="prod2">
+        <bean id="s3" class="backend.persistence20.MojServis">
+            <property name="ime" value="nina" />
+            <property name="prezime" value="prtenjak" />
+        </bean>
+    </beans>
+    
+    <beans profile="prod3">
+        <bean id="s4" class="backend.persistence20.MojServis">
+            <property name="ime" value="dobrivoje" />
+            <property name="prezime" value="prtenjak" />
+        </bean>
+
+        <bean id="cdServis" class="backend.persistence20.disk.BlankDisc" scope="prototype">
+            <property name="title" value="Get lucky" />
+            <property name="artist" value="Daft Punk" />
+        </bean>
+    </beans>
+
+    <beans profile="prod4">
+        <bean id="s5" class="backend.persistence20.MojServis" scope="prototype">
+            <property name="ime" value="Kaciperka" />
+            <property name="prezime" value="Nina" />
+        </bean>
+
+        <bean id="cdServis" class="backend.persistence20.disk.BlankDisc" scope="prototype">
+            <property name="title" value="Baterry" />
+            <property name="artist" value="Meetallica" />
+        </bean>
+    </beans>
+</beans>

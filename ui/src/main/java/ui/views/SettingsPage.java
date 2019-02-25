@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import system.eventbus.Events;
 
 @SpringView(name = SettingsPage.NAME)
-//@SpringComponent
-//@Lazy(false)
 public class SettingsPage extends VerticalLayout implements View {
 
     public static final String NAME = "settings";

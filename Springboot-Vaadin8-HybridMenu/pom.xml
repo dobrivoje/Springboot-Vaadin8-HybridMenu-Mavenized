@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>com.superbapps.spring.services</groupId>
-    <artifactId>Springboot-Vaadin8-HybridMenu</artifactId>
-    <version>1.0</version>
+    <artifactId>Services</artifactId>
+    <version>0.8</version>
     <name>Services</name>
     
     <parent>

@@ -2,11 +2,16 @@ package backend.persistence20.disk;
 
 import java.util.ArrayList;
 import java.util.List;
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author д06ри, dobri7@gmail.com
  */
+@Service
+//@Scope(SCOPE_SINGLETON)
 public class BlankDisc implements CompactDisc {
 
     private String title;

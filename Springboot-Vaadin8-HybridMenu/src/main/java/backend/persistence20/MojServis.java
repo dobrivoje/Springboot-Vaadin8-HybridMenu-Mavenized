@@ -1,12 +1,12 @@
 package backend.persistence20;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author д06ри, dobri7@gmail.com
  */
-@Component
+@Service
 public class MojServis {
 
     String ime;
