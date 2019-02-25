@@ -1,5 +1,6 @@
 package ui;
 
+import com.google.common.eventbus.Subscribe;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Viewport;
@@ -18,12 +19,12 @@ import ui.views.GroupPage;
 import ui.views.HomePage;
 import system.eventbus.Events;
 import system.uimanagement.NavigationManager;
-import com.google.common.eventbus.Subscribe;
 import com.vaadin.data.HasValue;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ClientConnector.DetachListener;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.ValueChangeMode;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Notification;
@@ -42,6 +43,7 @@ import ui.views.ErrorPage;
 import ui.views.NotificationBuilderPage;
 
 @SpringUI
+@UIScope
 @Theme("mytheme")
 @Viewport("width=device-width,initial-scale=1.0,user-scalable=yes")
 @Title("Vaadin Spring Boot with HybridMenu Template")
@@ -64,11 +66,6 @@ public class MainUI extends UI implements DetachListener {
         this.navigationManager.addProvider(viewProvider);
 
         super.setNavigator(navigationManager);
-    }
-
-    @Subscribe
-    public void loginTry(Events.LoginTryEvent lte) {
-        System.err.println("Events.LoginTryEvent        class : " + getClass() + "          ->           " + lte.getUsername());
     }
 
     @Override
@@ -220,4 +217,10 @@ public class MainUI extends UI implements DetachListener {
         getUI().close();
     }
 
+    @Subscribe
+    public void loginTry(Events.LoginTryEvent lte) {
+        System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        System.err.println(getClass().getSimpleName() + " : event : " + events + ", -> " + lte.getUsername());
+        System.err.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    }
 }

@@ -14,27 +14,29 @@ import system.eventbus.Events;
 //@SpringComponent
 //@Lazy(false)
 public class SettingsPage extends VerticalLayout implements View {
-
+    
     public static final String NAME = "settings";
-
+    
     @Autowired
     private Events events;
-
+    
     public SettingsPage() {
+        System.err.println("SettingsPage stranica konstruktor...");
         System.err.println(events == null);
     }
-
+    
     @PostConstruct
     void init() {
+//        events.register(this);
         Responsive.makeResponsive(this);
-
+        
         Label title = new Label();
         title.setCaption("Settings");
         title.setValue("Settings view");
         addComponent(title);
         events.post(new Events.LoginTryEvent("2. settings page..."));
     }
-
+    
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
     }

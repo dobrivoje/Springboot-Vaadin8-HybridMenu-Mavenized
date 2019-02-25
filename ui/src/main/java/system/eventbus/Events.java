@@ -3,12 +3,11 @@ package system.eventbus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
-import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
-import org.springframework.context.annotation.Scope;
+import com.vaadin.spring.annotation.UIScope;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope(SCOPE_PROTOTYPE)
+@UIScope
 public class Events implements SubscriberExceptionHandler {
 
     private final EventBus BUS = new EventBus(this);
