@@ -30,3 +30,4 @@ hs_err_pid*
 target/
 nb-configuration.xml
 /ui/nbproject/
+/Springboot-Vaadin8-HybridMenu/nbproject/

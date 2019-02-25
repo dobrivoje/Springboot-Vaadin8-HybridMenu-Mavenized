@@ -24,7 +24,9 @@
     </properties>
 
     <modules>
+        <module>Springboot-Vaadin8-HybridMenu</module>
         <module>ui</module>
+        <module>DB2</module>
     </modules>
     
 </project>
